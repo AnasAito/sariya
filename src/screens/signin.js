@@ -4,6 +4,7 @@ import { StyleSheet, View, Button, AsyncStorage } from "react-native";
 export default function SignInScreen({ navigation }) {
   // Sign up user with AWS Amplify Auth
   console.log("SignIn");
+
   return (
     <View style={styles.container}>
       <Button
