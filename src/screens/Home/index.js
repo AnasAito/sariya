@@ -8,9 +8,16 @@ import Ascard from "./card.js";
 import { Modal, Portal, Button, Provider } from "react-native-paper";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
+import { ActivityIndicator, Colors } from "react-native-paper";
+// api import
+import queries from "../api/queries";
+import { useQuery } from "@apollo/react-hooks";
+
 export default function HomeScreen({ navigation }) {
-  console.log("Home");
+  const { loading, data } = useQuery(queries.products);
+
   const [visible, setVisible] = useState(false);
+  console.log(!loading ? data : "loading");
   return (
     <View style={styles.container}>
       <View style={styles.head}>
@@ -28,8 +35,29 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
       <ScrollView style={styles.content}>
-        <Ascard navigation={navigation} />
-        <Ascard navigation={navigation} />
+        {!loading ? (
+          <>
+            {data.products.map(product => (
+              <Ascard
+                key={product.id}
+                id={product.id}
+                navigation={navigation}
+                price={product.price}
+                name={product.name}
+                cardImage={
+                  "https://assets-ouch.icons8.com/preview/792/2050d907-498d-4373-b55b-0656fe2fbd2c.png"
+                }
+              />
+            ))}
+          </>
+        ) : (
+          <ActivityIndicator
+            style={{ marginTop: 20 }}
+            size={"large"}
+            animating={true}
+            color={"#FC6C03"}
+          />
+        )}
       </ScrollView>
     </View>
   );

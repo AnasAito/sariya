@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, ScrollView, AsyncStorage } from "react-native";
 import { SliderBox } from "react-native-image-slider-box";
 import {
   Subheading,
@@ -13,8 +13,43 @@ import {
 import { Button } from "react-native-paper";
 import { Chip } from "react-native-paper";
 import NumericInput from "react-native-numeric-input";
-export default function ProductScreen() {
+
+// api import
+import queries from "../api/queries";
+import mutations from "../api/mutations";
+import { useQuery } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
+export default function ProductScreen(props) {
   const [visible, setVisible] = useState(false);
+  const [bagId, setBagId] = useState("");
+  useEffect(() => {
+    // Create an scoped async function in the hook
+    async function loadUsername() {
+      const bagId = await AsyncStorage.getItem("bagId");
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      setBagId(bagId);
+    }
+    // Execute the created function directly
+    loadUsername();
+  }, []);
+  const { loading, data } = useQuery(queries.product, {
+    variables: { id: props.navigation.getParam("productId", "") }
+  });
+  const [mutation] = useMutation(mutations.createUserProduct);
+
+  console.log(!loading ? data : "nodata");
+  const addtobag = (mutation, product, value) => {
+    mutation({
+      variables: {
+        user: "ck7t09wuq2awp0950qwlzuu6t",
+        product: product,
+        userBag: bagId,
+        qt: value
+      }
+    });
+  };
   const [value, setValue] = useState(0);
   return (
     <>
@@ -41,16 +76,19 @@ export default function ProductScreen() {
               marginLeft: 10
             }}
           >
-            <Title style={styles.title}>Product name</Title>
+            <Title style={styles.title}>
+              {!loading ? data.product.name : ""}
+            </Title>
 
             <Chip style={styles.code}>
-              <Text style={{ fontWeight: "bold" }}>200 dh</Text>
+              <Text style={{ fontWeight: "bold" }}>
+                {!loading ? data.product.price : ""} dh
+              </Text>
             </Chip>
           </View>
 
           <Text style={styles.desc}>
-            What are you working on? Dribbble is a community of designers
-            sharing screenshots of their work, process, and projects.
+            {!loading ? data.product.description : ""}
           </Text>
           <Button
             mode="contained"
@@ -82,7 +120,18 @@ export default function ProductScreen() {
               </View>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={() => setVisible(false)}>Add to card</Button>
+              <Button
+                onPress={() => {
+                  addtobag(
+                    mutation,
+                    props.navigation.getParam("productId", ""),
+                    value
+                  );
+                  setVisible(false);
+                }}
+              >
+                Add to card
+              </Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>

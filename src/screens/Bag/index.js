@@ -1,19 +1,71 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Subheading, Title } from "react-native-paper";
-import { Surface, Chip } from "react-native-paper";
-import { Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, AsyncStorage } from "react-native";
+import { Chip } from "react-native-paper";
 import { DataTable } from "react-native-paper";
-import { Modal, Portal, Button, Provider, Dialog } from "react-native-paper";
+import { Portal, Button, Dialog } from "react-native-paper";
+import Icon from "react-native-vector-icons/AntDesign";
+import { ActivityIndicator } from "react-native-paper";
+// api import
+import queries from "../api/queries";
+import mutations from "../api/mutations";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 
 export default function Bag() {
   const [visible, setVisible] = useState(false);
+  const [visible1, setVisible1] = useState(false);
+  const [productId, setProductId] = useState("");
+  const [productName, setProductName] = useState("");
+  const [bagId, setBagId] = useState("");
+  useEffect(() => {
+    // Create an scoped async function in the hook
+    async function loadUsername() {
+      const bagId = await AsyncStorage.getItem("bagId");
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      setBagId(bagId);
+    }
+    // Execute the created function directly
+    loadUsername();
+  }, []);
+
+  const { loading, data, refetch } = useQuery(queries.userBag, {
+    variables: { id: bagId },
+    fetchPolicy: "cache-and-network"
+  });
+  const [mutation] = useMutation(mutations.deleteUserProduct);
+  const [checkout] = useMutation(mutations.checkOut);
+  const [create, { bagdata }] = useMutation(mutations.createUserBag);
+  //console.log(!loading ? data : "nodata");
+  const publish = async () => {
+    // publish bag
+    checkout({
+      variables: {
+        id: bagId
+      }
+    });
+    // create a new bag
+    await create({
+      variables: {
+        user: "ck7t09wuq2awp0950qwlzuu6t"
+      }
+    }).then(async data => {
+      console.log(data.data.createUserBag.id);
+      await AsyncStorage.setItem("bagId", data.data.createUserBag.id);
+      setVisible(false);
+      setBagId(data.data.createUserBag.id);
+    });
+    // set new  bag id in loval storage
+  };
+  // console.log(bagdata);
   return (
     <View style={styles.container}>
       <View style={styles.head}>
         <View style={styles.icon}>
           <Chip style={styles.code}>
-            <Text style={{ fontWeight: "bold" }}>17 items</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              {!loading ? data.userBag.userProducts.length : ""} products
+            </Text>
           </Chip>
         </View>
       </View>
@@ -24,36 +76,46 @@ export default function Bag() {
             <DataTable.Title>Product Name</DataTable.Title>
             <DataTable.Title numeric>Quantity</DataTable.Title>
             <DataTable.Title numeric>Total Price</DataTable.Title>
+            <DataTable.Title numeric>Delete</DataTable.Title>
           </DataTable.Header>
-
-          <DataTable.Row>
-            <DataTable.Cell>Frozen yogurt</DataTable.Cell>
-            <DataTable.Cell numeric>159</DataTable.Cell>
-            <DataTable.Cell numeric>6.0</DataTable.Cell>
-          </DataTable.Row>
-
-          <DataTable.Row>
-            <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-            <DataTable.Cell numeric>237</DataTable.Cell>
-            <DataTable.Cell numeric>8.0</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-            <DataTable.Cell numeric>237</DataTable.Cell>
-            <DataTable.Cell numeric>8.0</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-            <DataTable.Cell numeric>237</DataTable.Cell>
-            <DataTable.Cell numeric>8.0</DataTable.Cell>
-          </DataTable.Row>
-          <DataTable.Row>
-            <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-            <DataTable.Cell numeric>237</DataTable.Cell>
-            <DataTable.Cell numeric>8.0</DataTable.Cell>
-          </DataTable.Row>
+          {!loading ? (
+            <>
+              {data.userBag.userProducts.map(product => (
+                <DataTable.Row
+                  key={product.id}
+                  onPress={() => setVisible1(true)}
+                >
+                  <DataTable.Cell>{product.product.name}</DataTable.Cell>
+                  <DataTable.Cell numeric>{product.qt}</DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {(product.product.price * product.qt).toFixed(2)}
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    <Icon
+                      onPress={() => {
+                        setProductId(product.id);
+                        setProductName(product.product.name);
+                        setVisible1(true);
+                      }}
+                      name="delete"
+                      size={29}
+                      color="#FC6C03"
+                    />
+                  </DataTable.Cell>
+                </DataTable.Row>
+              ))}
+            </>
+          ) : (
+            <ActivityIndicator
+              style={{ marginTop: 20 }}
+              size={"large"}
+              animating={true}
+              color={"#FC6C03"}
+            />
+          )}
         </DataTable>
       </ScrollView>
+
       <View style={{ flex: 0.4 }}>
         <View style={styles.icon}>
           <Chip style={styles.code}>
@@ -75,7 +137,30 @@ export default function Bag() {
               <Text> sure?</Text>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={() => setVisible(false)}>Yes</Button>
+              <Button onPress={() => publish()}>Yes</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+        <Portal>
+          <Dialog visible={visible1} onDismiss={() => setVisible1(false)}>
+            <Dialog.Title>{productName}</Dialog.Title>
+            <Dialog.Content>
+              <Text> Do you wanna delete this product from the bag ?</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                onPress={() => {
+                  mutation({
+                    variables: {
+                      id: productId
+                    }
+                  });
+                  refetch({ variables: { id: bagId } });
+                  setVisible1(false);
+                }}
+              >
+                Yes
+              </Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>

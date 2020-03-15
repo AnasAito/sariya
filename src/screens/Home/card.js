@@ -6,21 +6,24 @@ class Ascard extends React.Component {
   render() {
     return (
       <TouchableHighlight
-        onPress={() => this.props.navigation.navigate("Product")}
+        onPress={() =>
+          this.props.navigation.navigate("Product", {
+            productId: this.props.id
+          })
+        }
         underlayColor="white"
       >
         <Container>
           <Cover>
             <Image
               source={{
-                uri:
-                  "https://assets-ouch.icons8.com/preview/792/2050d907-498d-4373-b55b-0656fe2fbd2c.png"
+                uri: this.props.cardImage
               }}
             />
           </Cover>
 
           <Text style={{ marginTop: 10, marginLeft: 10, fontSize: 20 }}>
-            Product name
+            {this.props.name}
           </Text>
           <Text
             style={{
@@ -30,7 +33,7 @@ class Ascard extends React.Component {
               fontSize: 25
             }}
           >
-            199 DH
+            {this.props.price} DH
           </Text>
         </Container>
       </TouchableHighlight>
