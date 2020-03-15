@@ -1,20 +1,16 @@
-import React from "react";
-import {
-  StyleSheet,
-  View,
-  Button,
-  AsyncStorage,
-  ScrollView
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, AsyncStorage, ScrollView } from "react-native";
 import { Subheading, Title } from "react-native-paper";
 import { Surface, Text } from "react-native-paper";
 import { Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import Ascard from "./card.js";
+import { Modal, Portal, Button, Provider } from "react-native-paper";
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 export default function HomeScreen({ navigation }) {
   console.log("Home");
+  const [visible, setVisible] = useState(false);
   return (
     <View style={styles.container}>
       <View style={styles.head}>
@@ -23,7 +19,12 @@ export default function HomeScreen({ navigation }) {
           <Title style={styles.welcome}>Welcome</Title>
         </View>
         <View style={styles.icon}>
-          <Icon name="bag" size={40} color="#FC6C03" />
+          <Icon
+            onPress={() => navigation.navigate("Bag")}
+            name="bag"
+            size={40}
+            color="#FC6C03"
+          />
         </View>
       </View>
       <ScrollView style={styles.content}>
@@ -38,8 +39,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   head: {
-    height: (2 * height) / 15,
-    margin: 10,
+    marginLeft: 10,
 
     flexDirection: "row",
     justifyContent: "space-between"

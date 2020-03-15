@@ -8,9 +8,11 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import Ionicons from "react-native-vector-icons/Ionicons";
 // import screens
 import HomeScreen from "./src/screens/Home/index";
+import ProductScreen from "./src/screens/Product/index";
 import ProfileScreen from "./src/screens/Profile/index";
 import AuthLoadingScreen from "./src/screens/loading";
 import SignInScreen from "./src/screens/signin";
+import Bag from "./src/screens/Bag/index";
 import Phone from "./src/screens/phoneSignIn";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
@@ -27,21 +29,17 @@ const client = new ApolloClient({
   uri: "https://backend.anasaitaomar1999.now.sh/"
 });
 
-const AppStack = createStackNavigator(
-  {
-    Home: {
-      screen: HomeScreen
-    },
-
-    Other: {
-      screen: ProfileScreen
-    }
+const AppStack = createStackNavigator({
+  Home: {
+    screen: HomeScreen
   },
-  {
-    header: null,
-    headerMode: "none"
-  }
-);
+
+  Product: {
+    screen: ProductScreen
+  },
+  Bag: { screen: Bag }
+});
+
 const Profile = createStackNavigator(
   {
     Profile: {

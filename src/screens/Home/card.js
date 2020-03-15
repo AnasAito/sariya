@@ -6,7 +6,7 @@ class Ascard extends React.Component {
   render() {
     return (
       <TouchableHighlight
-        onPress={() => this.props.navigation.navigate("Other")}
+        onPress={() => this.props.navigation.navigate("Product")}
         underlayColor="white"
       >
         <Container>
