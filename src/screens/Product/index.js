@@ -22,14 +22,16 @@ import { useMutation } from "@apollo/react-hooks";
 export default function ProductScreen(props) {
   const [visible, setVisible] = useState(false);
   const [bagId, setBagId] = useState("");
+  const [userId, setUserId] = useState("");
   useEffect(() => {
     // Create an scoped async function in the hook
     async function loadUsername() {
       const bagId = await AsyncStorage.getItem("bagId");
-
+      const UserId = await AsyncStorage.getItem("userToken");
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       setBagId(bagId);
+      setUserId(UserId);
     }
     // Execute the created function directly
     loadUsername();
@@ -43,7 +45,7 @@ export default function ProductScreen(props) {
   const addtobag = (mutation, product, value) => {
     mutation({
       variables: {
-        user: "ck7t09wuq2awp0950qwlzuu6t",
+        user: userId,
         product: product,
         userBag: bagId,
         qt: value

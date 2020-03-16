@@ -42,10 +42,32 @@ export const DeleteUserProduct = gql`
   }
 `;
 export const CheckOut = gql`
-  mutation updateUserBag($id: ID!) {
-    updateUserBag(where: { id: $id }, data: { published: true }) {
+  mutation updateUserBag($id: ID!, $location: ID!) {
+    updateUserBag(
+      where: { id: $id }
+      data: { published: true, location: { connect: { id: $location } } }
+    ) {
       id
       published
+    }
+  }
+`;
+export const CreateLocation = gql`
+  mutation createUserProduct(
+    $user: ID!
+    $name: String!
+    $long: String!
+    $lat: String!
+  ) {
+    createLocation(
+      data: {
+        name: $name
+        lat: $lat
+        long: $long
+        user: { connect: { id: $user } }
+      }
+    ) {
+      id
     }
   }
 `;
@@ -54,5 +76,6 @@ export default {
   createUser: CreateUser,
   deleteUserProduct: DeleteUserProduct,
   checkOut: CheckOut,
-  createUserBag: CreateUserBag
+  createUserBag: CreateUserBag,
+  createLocation: CreateLocation
 };

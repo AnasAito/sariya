@@ -5,6 +5,7 @@ import { DataTable } from "react-native-paper";
 import { Portal, Button, Dialog } from "react-native-paper";
 import Icon from "react-native-vector-icons/AntDesign";
 import { ActivityIndicator } from "react-native-paper";
+import { RadioButton } from "react-native-paper";
 // api import
 import queries from "../api/queries";
 import mutations from "../api/mutations";
@@ -15,15 +16,18 @@ export default function Bag() {
   const [visible1, setVisible1] = useState(false);
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
+  const [checked, setChecked] = useState("");
   const [bagId, setBagId] = useState("");
+  const [userId, setUserId] = useState("");
   useEffect(() => {
     // Create an scoped async function in the hook
     async function loadUsername() {
       const bagId = await AsyncStorage.getItem("bagId");
-
+      const UserId = await AsyncStorage.getItem("userToken");
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
       setBagId(bagId);
+      setUserId(UserId);
     }
     // Execute the created function directly
     loadUsername();
@@ -33,6 +37,10 @@ export default function Bag() {
     variables: { id: bagId },
     fetchPolicy: "cache-and-network"
   });
+  const { loading: loadingl, data: dataLocation } = useQuery(queries.user, {
+    variables: { id: userId },
+    fetchPolicy: "network-only"
+  });
   const [mutation] = useMutation(mutations.deleteUserProduct);
   const [checkout] = useMutation(mutations.checkOut);
   const [create, { bagdata }] = useMutation(mutations.createUserBag);
@@ -41,13 +49,14 @@ export default function Bag() {
     // publish bag
     checkout({
       variables: {
-        id: bagId
+        id: bagId,
+        location: checked
       }
     });
     // create a new bag
     await create({
       variables: {
-        user: "ck7t09wuq2awp0950qwlzuu6t"
+        user: userId
       }
     }).then(async data => {
       console.log(data.data.createUserBag.id);
@@ -57,7 +66,7 @@ export default function Bag() {
     });
     // set new  bag id in loval storage
   };
-  // console.log(bagdata);
+  console.log(checked);
   return (
     <View style={styles.container}>
       <View style={styles.head}>
@@ -134,9 +143,29 @@ export default function Bag() {
           <Dialog visible={visible} onDismiss={() => setVisible(false)}>
             <Dialog.Title>Check out</Dialog.Title>
             <Dialog.Content>
-              <Text> sure?</Text>
+              <Text> Choose a location</Text>
+              <View>
+                <RadioButton.Group
+                  onValueChange={value => setChecked(value)}
+                  value={checked}
+                >
+                  {!loadingl ? (
+                    dataLocation.user.locations.map(location => (
+                      <RadioButton.Item
+                        key={location.id}
+                        label={location.name}
+                        value={location.id}
+                        color="#FC6C03"
+                      />
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </RadioButton.Group>
+              </View>
             </Dialog.Content>
             <Dialog.Actions>
+              <Button onPress={() => setVisible(false)}>cancel</Button>
               <Button onPress={() => publish()}>Yes</Button>
             </Dialog.Actions>
           </Dialog>

@@ -1,11 +1,13 @@
 import { gql } from "apollo-boost";
 
 export const User = gql`
-  query user($phone: String!) {
-    user(where: { phone: $phone }) {
+  query user($id: ID!) {
+    user(where: { id: $id }) {
       id
       name
+      phone
       locations {
+        id
         name
         long
         lat
