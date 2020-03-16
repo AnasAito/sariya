@@ -44,9 +44,8 @@ export default function HomeScreen({ navigation }) {
                 navigation={navigation}
                 price={product.price}
                 name={product.name}
-                cardImage={
-                  "https://assets-ouch.icons8.com/preview/792/2050d907-498d-4373-b55b-0656fe2fbd2c.png"
-                }
+                cardImage={product.images[0]}
+                // images={product.images}
               />
             ))}
           </>

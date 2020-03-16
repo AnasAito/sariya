@@ -57,12 +57,16 @@ export default function ProductScreen(props) {
     <>
       <ScrollView style={styles.container}>
         <SliderBox
-          images={[
-            "https://assets-ouch.icons8.com/preview/898/8942160d-0a5d-4978-b21b-3722075388d1.png",
-            "https://assets-ouch.icons8.com/preview/105/9ecf53bb-4a39-4b07-9af3-531a361270e6.png"
-            // Network image
-            // Local image
-          ]}
+          images={
+            !loading
+              ? data.product.images
+              : [
+                  "https://assets-ouch.icons8.com/preview/898/8942160d-0a5d-4978-b21b-3722075388d1.png",
+                  "https://assets-ouch.icons8.com/preview/105/9ecf53bb-4a39-4b07-9af3-531a361270e6.png"
+                  // Network image
+                  // Local image
+                ]
+          }
           dotColor="#FC6C03"
           inactiveDotColor="#777"
           sliderBoxHeight={300}
@@ -144,7 +148,7 @@ export default function ProductScreen(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    //  marginTop: 20,
 
     flexDirection: "column"
   },

@@ -35,24 +35,33 @@ export default function SignInScreen({ navigation }) {
         onChangeText={text => setPhone(text)}
       />
       <Button
-        type="contained"
-        style={{ marginTop: 30 }}
+        mode="contained"
+        color="#FC6C03"
+        style={{ marginTop: 30, alignSelf: "center" }}
         onPress={async () => {
-          await mutation({ variables: { name: username, phone: phone } }).then(
-            async ({ data }) => {
-              //  console.log(data.createUser.id);
-              await AsyncStorage.setItem("userToken", data.createUser.id);
-              await create({
-                variables: {
-                  user: data.createUser.id
-                }
-              }).then(async data => {
-                console.log(data.data.createUserBag.id);
-                await AsyncStorage.setItem("bagId", data.data.createUserBag.id);
+          if (username) {
+            if (phone) {
+              await mutation({
+                variables: { name: username, phone: phone }
+              }).then(async ({ data }) => {
+                //  console.log(data.createUser.id);
+                await AsyncStorage.setItem("userToken", data.createUser.id);
+                await create({
+                  variables: {
+                    user: data.createUser.id
+                  }
+                }).then(async data => {
+                  console.log(data.data.createUserBag.id);
+                  await AsyncStorage.setItem(
+                    "bagId",
+                    data.data.createUserBag.id
+                  );
+                });
+                navigation.navigate("App");
               });
-              navigation.navigate("App");
             }
-          );
+          }
+
           // await AsyncStorage.setItem("userToken", "abc");
           //navigation.navigate("App");
         }}
