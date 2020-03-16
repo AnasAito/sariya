@@ -45,6 +45,13 @@ export default function Bag() {
   const [checkout] = useMutation(mutations.checkOut);
   const [create, { bagdata }] = useMutation(mutations.createUserBag);
   //console.log(!loading ? data : "nodata");
+  const getTotal = list => {
+    let total = 0;
+    list.map(product => {
+      total = total + product.product.price * product.qt;
+    });
+    return total.toFixed(2);
+  };
   const publish = async () => {
     // publish bag
     checkout({
@@ -128,7 +135,9 @@ export default function Bag() {
       <View style={{ flex: 0.4 }}>
         <View style={styles.icon}>
           <Chip style={styles.code}>
-            <Text style={{ fontWeight: "bold" }}>Total : 1238 DH</Text>
+            <Text style={{ fontWeight: "bold" }}>
+              Total : {!loading ? getTotal(data.userBag.userProducts) : 0} DH
+            </Text>
           </Chip>
         </View>
         <Button

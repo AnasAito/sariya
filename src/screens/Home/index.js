@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, AsyncStorage, ScrollView } from "react-native";
 import { Subheading, Title } from "react-native-paper";
 import { Surface, Text } from "react-native-paper";
@@ -17,12 +17,31 @@ export default function HomeScreen({ navigation }) {
   const { loading, data } = useQuery(queries.products);
 
   const [visible, setVisible] = useState(false);
-  console.log(!loading ? data : "loading");
+  const [userId, setUserId] = useState("");
+  useEffect(() => {
+    // Create an scoped async function in the hook
+    async function loadUsername() {
+      // const bagId = await AsyncStorage.getItem("bagId");
+      const UserId = await AsyncStorage.getItem("userToken");
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+
+      setUserId(UserId);
+    }
+    // Execute the created function directly
+    loadUsername();
+  }, []);
+  const { loading: loadingu, data: user } = useQuery(queries.user, {
+    variables: { id: userId }
+  });
+  // console.log(!loading ? data : "loading");
   return (
     <View style={styles.container}>
       <View style={styles.head}>
         <View>
-          <Subheading style={styles.hi}>Hi Anas</Subheading>
+          <Subheading style={styles.hi}>
+            Hi {!loadingu ? user.user.name : ""}
+          </Subheading>
           <Title style={styles.welcome}>Welcome</Title>
         </View>
         <View style={styles.icon}>

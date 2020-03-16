@@ -10,9 +10,17 @@
       "web"
     ],
     "version": "1.0.0",
+    "android": {
+      "package": "com.sayira.sayira",
+      "versionCode": 1
+    },
+    "ios": {
+      "bundleIdentifier": "com.yourcompany.yourappname",
+      "buildNumber": "1.0.0"
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "splash": {
+    "splash": { 
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
@@ -23,8 +31,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    }
+    "description": ""   
   }
 }
