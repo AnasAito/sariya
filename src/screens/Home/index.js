@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, AsyncStorage, ScrollView } from "react-native";
 import { Subheading, Title } from "react-native-paper";
-import { Surface, Text } from "react-native-paper";
+
 import { Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import Ascard from "./card.js";
-import { Modal, Portal, Button, Provider } from "react-native-paper";
+
 var width = Dimensions.get("window").width; //full width
 var height = Dimensions.get("window").height; //full height
 import { ActivityIndicator, Colors } from "react-native-paper";
@@ -38,12 +38,6 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.head}>
-        <View>
-          <Subheading style={styles.hi}>
-            Hi {!loadingu ? user.user.name : ""}
-          </Subheading>
-          <Title style={styles.welcome}>Welcome</Title>
-        </View>
         <View style={styles.icon}>
           <Icon
             onPress={() => navigation.navigate("Bag")}
@@ -51,6 +45,12 @@ export default function HomeScreen({ navigation }) {
             size={40}
             color="#FC6C03"
           />
+        </View>
+        <View>
+          <Subheading style={styles.hi}>
+            {!loadingu ? user.user.name : ""} أهلا
+          </Subheading>
+          <Title style={styles.welcome}>مرحباً</Title>
         </View>
       </View>
       <ScrollView style={styles.content}>
@@ -85,16 +85,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   head: {
-    marginLeft: 10,
+    // marginLeft: 10,
 
     flexDirection: "row",
     justifyContent: "space-between"
   },
   hi: {
     color: "gray",
-    marginTop: 10
+    marginTop: 10,
+    marginRight: 10
   },
-  welcome: { fontSize: 40, paddingTop: 10 },
+  welcome: { fontSize: 40, paddingTop: 10, marginRight: 10 },
   content: {
     flex: 0.8,
     paddingTop: 10

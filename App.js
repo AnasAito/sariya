@@ -31,13 +31,45 @@ const client = new ApolloClient({
 
 const AppStack = createStackNavigator({
   Home: {
-    screen: HomeScreen
+    screen: HomeScreen,
+    navigationOptions: () => ({
+      title: `الصفحة الرئيسية `,
+      headerStyle: {
+        backgroundColor: "#FC6C03"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold"
+      }
+    })
   },
 
   Product: {
-    screen: ProductScreen
+    screen: ProductScreen,
+    navigationOptions: () => ({
+      title: ` وصف المنتج `,
+      headerStyle: {
+        backgroundColor: "#FC6C03"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold"
+      }
+    })
   },
-  Bag: { screen: Bag }
+  Bag: {
+    screen: Bag,
+    navigationOptions: () => ({
+      title: `حقيبة`,
+      headerStyle: {
+        backgroundColor: "#FC6C03"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold"
+      }
+    })
+  }
 });
 
 const Profile = createStackNavigator(
@@ -59,10 +91,12 @@ const AuthStack = createStackNavigator({
 const AppTabNavigator = createBottomTabNavigator(
   {
     Home: {
-      screen: AppStack
+      screen: AppStack,
+      navigationOptions: { tabBarLabel: "الصفحة الرئيسية" }
     },
     Profile: {
-      screen: Profile
+      screen: Profile,
+      navigationOptions: { tabBarLabel: "الملف الشخصي" }
     }
   },
   {

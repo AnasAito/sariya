@@ -10,10 +10,11 @@ import { RadioButton } from "react-native-paper";
 import queries from "../api/queries";
 import mutations from "../api/mutations";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-
+import { Snackbar } from "react-native-paper";
 export default function Bag() {
   const [visible, setVisible] = useState(false);
   const [visible1, setVisible1] = useState(false);
+  const [snackVisible, setSnackVisible] = useState(false);
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [checked, setChecked] = useState("");
@@ -53,24 +54,29 @@ export default function Bag() {
     return total.toFixed(2);
   };
   const publish = async () => {
-    // publish bag
-    checkout({
-      variables: {
-        id: bagId,
-        location: checked
-      }
-    });
-    // create a new bag
-    await create({
-      variables: {
-        user: userId
-      }
-    }).then(async data => {
-      console.log(data.data.createUserBag.id);
-      await AsyncStorage.setItem("bagId", data.data.createUserBag.id);
-      setVisible(false);
-      setBagId(data.data.createUserBag.id);
-    });
+    if (checked) {
+      // publish bag
+      checkout({
+        variables: {
+          id: bagId,
+          location: checked
+        }
+      });
+      // create a new bag
+      await create({
+        variables: {
+          user: userId
+        }
+      }).then(async data => {
+        console.log(data.data.createUserBag.id);
+        await AsyncStorage.setItem("bagId", data.data.createUserBag.id);
+        setVisible(false);
+        setBagId(data.data.createUserBag.id);
+      });
+    } else {
+      setSnackVisible(true);
+    }
+
     // set new  bag id in loval storage
   };
   console.log(checked);
@@ -89,10 +95,10 @@ export default function Bag() {
       <ScrollView style={{ flex: 0.5 }}>
         <DataTable>
           <DataTable.Header>
-            <DataTable.Title>Product Name</DataTable.Title>
-            <DataTable.Title numeric>Quantity</DataTable.Title>
-            <DataTable.Title numeric>Total Price</DataTable.Title>
-            <DataTable.Title numeric>Delete</DataTable.Title>
+            <DataTable.Title>اسم المنتج</DataTable.Title>
+            <DataTable.Title numeric>كمية</DataTable.Title>
+            <DataTable.Title numeric>السعر الكلي</DataTable.Title>
+            <DataTable.Title numeric>حذف</DataTable.Title>
           </DataTable.Header>
           {!loading ? (
             <>
@@ -136,7 +142,7 @@ export default function Bag() {
         <View style={styles.icon}>
           <Chip style={styles.code}>
             <Text style={{ fontWeight: "bold" }}>
-              Total : {!loading ? getTotal(data.userBag.userProducts) : 0} DH
+              مجموع : {!loading ? getTotal(data.userBag.userProducts) : 0} MRO
             </Text>
           </Chip>
         </View>
@@ -146,13 +152,17 @@ export default function Bag() {
           onPress={() => setVisible(true)}
           color="#FC6C03"
         >
-          Check Out
+          الدفع
         </Button>
         <Portal>
-          <Dialog visible={visible} onDismiss={() => setVisible(false)}>
-            <Dialog.Title>Check out</Dialog.Title>
+          <Dialog
+            style={{ direction: "rtl" }}
+            visible={visible}
+            onDismiss={() => setVisible(false)}
+          >
+            <Dialog.Title> الدفع</Dialog.Title>
             <Dialog.Content>
-              <Text> Choose a location</Text>
+              <Text> اختر مكان التوصيل الخاص بك</Text>
               <View>
                 <RadioButton.Group
                   onValueChange={value => setChecked(value)}
@@ -183,7 +193,7 @@ export default function Bag() {
           <Dialog visible={visible1} onDismiss={() => setVisible1(false)}>
             <Dialog.Title>{productName}</Dialog.Title>
             <Dialog.Content>
-              <Text> Do you wanna delete this product from the bag ?</Text>
+              <Text> هل تريد حذف هذا المنتج من الحقيبة؟</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button
@@ -203,13 +213,26 @@ export default function Bag() {
           </Dialog>
         </Portal>
       </View>
+      <Snackbar
+        visible={snackVisible}
+        onDismiss={() => setSnackVisible(false)}
+        action={{
+          label: "الغاء",
+          onPress: () => {
+            setSnackVisible(false);
+          }
+        }}
+      >
+        الرجاء اختيار موقع أو إضافة موقع في ملفك الشخصي!
+      </Snackbar>
     </View>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20
+    marginTop: 20,
+    direction: "rtl"
   },
   head: {
     flex: 0.1,

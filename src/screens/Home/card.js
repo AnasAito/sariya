@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { TouchableHighlight } from "react-native";
-
+import { Dimensions } from "react-native";
+var width = Dimensions.get("window").width; //full width
+var height = Dimensions.get("window").height; //full height
 class Ascard extends React.Component {
   render() {
     return (
@@ -22,18 +24,25 @@ class Ascard extends React.Component {
             />
           </Cover>
 
-          <Text style={{ marginTop: 10, marginLeft: 10, fontSize: 20 }}>
+          <Text
+            style={{
+              marginTop: 10,
+              alignSelf: "center",
+
+              fontSize: 20
+            }}
+          >
             {this.props.name}
           </Text>
           <Text
             style={{
               marginTop: 10,
-              marginLeft: 10,
+              alignSelf: "center",
               fontWeight: "bold",
               fontSize: 25
             }}
           >
-            {this.props.price} DH
+            {this.props.price} MRO
           </Text>
         </Container>
       </TouchableHighlight>

@@ -85,7 +85,7 @@ export default function ProfileScreen({ navigation }) {
             }}
           >
             <Text style={{ fontSize: 25, fontWeight: "400", color: "gray" }}>
-              username :{" "}
+              اسم المستخدم :{" "}
             </Text>
 
             <Text style={{ fontSize: 25, fontWeight: "400" }}>
@@ -101,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
             }}
           >
             <Text style={{ fontSize: 25, fontWeight: "400", color: "gray" }}>
-              Phone number :{" "}
+              رقم الهاتف :{" "}
             </Text>
 
             <Text style={{ fontSize: 25, fontWeight: "400" }}>
@@ -111,17 +111,17 @@ export default function ProfileScreen({ navigation }) {
         </View>
       )}
       <Divider />
-      <Button
-        style={{ alignSelf: "center", marginTop: 50 }}
+      {/*  <Button
+    style={{ alignSelf: "center", marginTop: 50 }}
         mode="contained"
         onPress={() => navigation.navigate("SignIn")}
       >
         sign out
-      </Button>
+    </Button>*/}
       <FAB
         style={styles.fab}
         small
-        label="Add location"
+        label="إضافة موقع جغرافي جديد"
         icon="plus"
         onPress={async () => {
           await getLocationAsync();
@@ -131,18 +131,22 @@ export default function ProfileScreen({ navigation }) {
         }}
       />
       <Portal>
-        <Dialog visible={visible} onDismiss={() => setVisible(false)}>
-          <Dialog.Title>Enter a name to your new location</Dialog.Title>
+        <Dialog
+          style={{ direction: "rtl" }}
+          visible={visible}
+          onDismiss={() => setVisible(false)}
+        >
+          <Dialog.Title>أدخل اسمًا لموقعك الجديد</Dialog.Title>
           <Dialog.Content>
             <TextInput
               type="outlined"
-              label="location name"
+              label="اسم الموقع"
               value={text}
               onChangeText={text => setText(text)}
             />
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => addLocal()}>Save</Button>
+            <Button onPress={() => addLocal()}>حفظ</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -152,7 +156,8 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 40
+    marginTop: 40,
+    direction: "rtl"
     //  justifyContent: "center",
   },
   fab: {

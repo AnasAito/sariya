@@ -1,17 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView, AsyncStorage } from "react-native";
 import { SliderBox } from "react-native-image-slider-box";
-import {
-  Subheading,
-  Title,
-  Text,
-  Portal,
-  Provider,
-  Paragraph,
-  Dialog
-} from "react-native-paper";
+import { Title, Text, Portal, Dialog } from "react-native-paper";
 import { Button } from "react-native-paper";
-import { Chip } from "react-native-paper";
+import { Chip, Snackbar } from "react-native-paper";
 import NumericInput from "react-native-numeric-input";
 
 // api import
@@ -21,6 +13,7 @@ import { useQuery } from "@apollo/react-hooks";
 import { useMutation } from "@apollo/react-hooks";
 export default function ProductScreen(props) {
   const [visible, setVisible] = useState(false);
+  const [snackVisible, setSnackVisible] = useState(false);
   const [bagId, setBagId] = useState("");
   const [userId, setUserId] = useState("");
   useEffect(() => {
@@ -41,8 +34,8 @@ export default function ProductScreen(props) {
   });
   const [mutation] = useMutation(mutations.createUserProduct);
 
-  console.log(!loading ? data : "nodata");
-  const addtobag = (mutation, product, value) => {
+  //console.log(!loading ? data : "nodata");
+  const addtobag = async (mutation, product, value) => {
     mutation({
       variables: {
         user: userId,
@@ -50,6 +43,8 @@ export default function ProductScreen(props) {
         userBag: bagId,
         qt: value
       }
+    }).then(data => {
+      setSnackVisible(true);
     });
   };
   const [value, setValue] = useState(0);
@@ -76,38 +71,43 @@ export default function ProductScreen(props) {
         <View>
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: "row-reverse",
               justifyContent: "space-between",
-              marginRight: 10,
+              direction: "rtl",
               marginLeft: 10
             }}
           >
-            <Title style={styles.title}>
-              {!loading ? data.product.name : ""}
-            </Title>
-
             <Chip style={styles.code}>
               <Text style={{ fontWeight: "bold" }}>
-                {!loading ? data.product.price : ""} dh
+                {!loading ? data.product.price : ""} MRO
               </Text>
             </Chip>
+            <Title style={styles.title}>
+              {" "}
+              {!loading ? data.product.name : ""}
+            </Title>
           </View>
 
           <Text style={styles.desc}>
             {!loading ? data.product.description : ""}
           </Text>
+
           <Button
             mode="contained"
             style={{ alignSelf: "center", marginTop: 30 }}
             onPress={() => setVisible(true)}
             color="#FC6C03"
           >
-            Add to card
+            أضف الى الحقيبة
           </Button>
         </View>
         <Portal>
-          <Dialog visible={visible} onDismiss={() => setVisible(false)}>
-            <Dialog.Title>Quantity</Dialog.Title>
+          <Dialog
+            style={{ direction: "rtl" }}
+            visible={visible}
+            onDismiss={() => setVisible(false)}
+          >
+            <Dialog.Title>اختر عدد العناصر</Dialog.Title>
             <Dialog.Content>
               <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <NumericInput
@@ -136,12 +136,24 @@ export default function ProductScreen(props) {
                   setVisible(false);
                 }}
               >
-                Add to card
+                أضف الى الحقيبة
               </Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>
       </ScrollView>
+      <Snackbar
+        visible={snackVisible}
+        onDismiss={() => setSnackVisible(false)}
+        action={{
+          label: "الغاء",
+          onPress: () => {
+            setSnackVisible(false);
+          }
+        }}
+      >
+        تمت إضافة المنتج إلى حقيبة !
+      </Snackbar>
     </>
   );
 }
@@ -153,12 +165,22 @@ const styles = StyleSheet.create({
     flexDirection: "column"
   },
   images: { flex: 0.4 },
-  title: { paddingTop: 30, fontSize: 40, flex: 0.9 },
+  title: {
+    paddingTop: 30,
+    fontSize: 30,
+    flex: 0.9,
+    marginLeft: 10
+  },
   code: {
-    marginTop: 25,
+    marginTop: 30,
     backgroundColor: "#FC6C03",
 
     alignSelf: "flex-start"
   },
-  desc: { marginLeft: 10, fontSize: 20, marginTop: 20 }
+  desc: {
+    marginLeft: 10,
+    fontSize: 20,
+    marginTop: 20,
+    direction: "rtl"
+  }
 });
