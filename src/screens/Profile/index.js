@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, AsyncStorage, StyleSheet, Image } from "react-native";
 import { Title, Text, Surface, FAB, Divider } from "react-native-paper";
+import { Chip } from "react-native-paper";
 import { Portal, Button, Dialog, TextInput } from "react-native-paper";
 import * as Permissions from "expo-permissions";
 import * as Location from "expo-location";
@@ -123,9 +124,13 @@ export default function ProfileScreen({ navigation }) {
         >
           المواقع الجغرافية الخاصة بي :
         </Text>
-        <View style={{ flexDirection: "row", marginTop: 10 }}>
+        <View style={{ flexDirection: "row", marginTop: 10, marginLeft: 20 }}>
           {!loading ? (
-            data.user.locations.map(loc => <Text>{loc.name}</Text>)
+            data.user.locations.map(loc => (
+              <Chip style={{ marginLeft: 10, backgroundColor: "#FC6C03" }}>
+                <Text style={{ fontWeight: "bold" }}>{loc.name}</Text>
+              </Chip>
+            ))
           ) : (
             <></>
           )}
