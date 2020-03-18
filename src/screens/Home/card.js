@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { TouchableHighlight } from "react-native";
 import { Dimensions } from "react-native";
-var width = Dimensions.get("window").width; //full width
-var height = Dimensions.get("window").height; //full height
+
 class Ascard extends React.Component {
   render() {
     return (

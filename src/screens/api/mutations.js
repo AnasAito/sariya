@@ -52,6 +52,13 @@ export const CheckOut = gql`
     }
   }
 `;
+export const UpdateQt = gql`
+  mutation updateQt($id: ID!, $qt: Int!) {
+    updateUserProduct(where: { id: $id }, data: { qt: $qt }) {
+      id
+    }
+  }
+`;
 export const CreateLocation = gql`
   mutation createUserProduct(
     $user: ID!
@@ -77,5 +84,6 @@ export default {
   deleteUserProduct: DeleteUserProduct,
   checkOut: CheckOut,
   createUserBag: CreateUserBag,
-  createLocation: CreateLocation
+  createLocation: CreateLocation,
+  updateQt: UpdateQt
 };

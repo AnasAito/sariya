@@ -6,15 +6,20 @@ import { Portal, Button, Dialog } from "react-native-paper";
 import Icon from "react-native-vector-icons/AntDesign";
 import { ActivityIndicator } from "react-native-paper";
 import { RadioButton } from "react-native-paper";
+import NumericInput from "react-native-numeric-input";
+import { Snackbar } from "react-native-paper";
 // api import
 import queries from "../api/queries";
 import mutations from "../api/mutations";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { Snackbar } from "react-native-paper";
+
 export default function Bag() {
   const [visible, setVisible] = useState(false);
   const [visible1, setVisible1] = useState(false);
+  const [visibleq, setVisibleq] = useState(false);
+  const [value, setValue] = useState(1);
   const [snackVisible, setSnackVisible] = useState(false);
+  const [snackVisibled, setSnackVisibled] = useState(false);
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [checked, setChecked] = useState("");
@@ -43,11 +48,19 @@ export default function Bag() {
     fetchPolicy: "network-only"
   });
   const [mutation] = useMutation(mutations.deleteUserProduct);
+  const [updateQt] = useMutation(mutations.updateQt);
   const [checkout] = useMutation(mutations.checkOut);
   const [create, { bagdata }] = useMutation(mutations.createUserBag);
   //console.log(!loading ? data : "nodata");
   const getTotal = list => {
     let total = 0;
+    list.map(product => {
+      total = total + product.product.price * product.qt;
+    });
+    return total.toFixed(2);
+  };
+  const getTotald = list => {
+    let total = 50;
     list.map(product => {
       total = total + product.product.price * product.qt;
     });
@@ -71,6 +84,7 @@ export default function Bag() {
         console.log(data.data.createUserBag.id);
         await AsyncStorage.setItem("bagId", data.data.createUserBag.id);
         setVisible(false);
+        setSnackVisibled(true);
         setBagId(data.data.createUserBag.id);
       });
     } else {
@@ -97,7 +111,8 @@ export default function Bag() {
           <DataTable.Header>
             <DataTable.Title>اسم المنتج</DataTable.Title>
             <DataTable.Title numeric>كمية</DataTable.Title>
-            <DataTable.Title numeric>السعر الكلي</DataTable.Title>
+
+            <DataTable.Title numeric>تعديل</DataTable.Title>
             <DataTable.Title numeric>حذف</DataTable.Title>
           </DataTable.Header>
           {!loading ? (
@@ -109,8 +124,18 @@ export default function Bag() {
                 >
                   <DataTable.Cell>{product.product.name}</DataTable.Cell>
                   <DataTable.Cell numeric>{product.qt}</DataTable.Cell>
+
                   <DataTable.Cell numeric>
-                    {(product.product.price * product.qt).toFixed(2)}
+                    <Icon
+                      onPress={() => {
+                        setProductId(product.id);
+                        setProductName(product.product.name);
+                        setVisibleq(true);
+                      }}
+                      name="edit"
+                      size={29}
+                      color="#FC6C03"
+                    />
                   </DataTable.Cell>
                   <DataTable.Cell numeric>
                     <Icon
@@ -138,11 +163,19 @@ export default function Bag() {
         </DataTable>
       </ScrollView>
 
-      <View style={{ flex: 0.4 }}>
+      <View style={{ flex: 0.5 }}>
         <View style={styles.icon}>
           <Chip style={styles.code}>
             <Text style={{ fontWeight: "bold" }}>
-              مجموع : {!loading ? getTotal(data.userBag.userProducts) : 0} MRO
+              إجمالي : {!loading ? getTotal(data.userBag.userProducts) : 0} MRO
+            </Text>
+          </Chip>
+        </View>
+        <View style={{ alignSelf: "center", marginTop: 10 }}>
+          <Chip style={styles.code}>
+            <Text style={{ fontWeight: "bold" }}>
+              الإجمالي بعد تكلفة التسليم :{" "}
+              {!loading ? getTotald(data.userBag.userProducts) : 0} MRO
             </Text>
           </Chip>
         </View>
@@ -162,7 +195,10 @@ export default function Bag() {
           >
             <Dialog.Title> الدفع</Dialog.Title>
             <Dialog.Content>
-              <Text> اختر مكان التوصيل الخاص بك</Text>
+              <Text style={{ marginRight: 100 }}>
+                {" "}
+                اختر مكان التوصيل الخاص بك
+              </Text>
               <View>
                 <RadioButton.Group
                   onValueChange={value => setChecked(value)}
@@ -184,8 +220,8 @@ export default function Bag() {
               </View>
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={() => setVisible(false)}>cancel</Button>
-              <Button onPress={() => publish()}>Yes</Button>
+              <Button onPress={() => setVisible(false)}>إلغاء</Button>
+              <Button onPress={() => publish()}>نعم</Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>
@@ -207,7 +243,50 @@ export default function Bag() {
                   setVisible1(false);
                 }}
               >
-                Yes
+                نعم
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+        <Portal>
+          <Dialog
+            style={{ direction: "rtl" }}
+            visible={visibleq}
+            onDismiss={() => setVisibleq(false)}
+          >
+            <Dialog.Title>اختر عدد العناصر</Dialog.Title>
+            <Dialog.Content>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <NumericInput
+                  value={value}
+                  minValue={1}
+                  onChange={value => setValue(value)}
+                  onLimitReached={(isMax, msg) => console.log(isMax, msg)}
+                  totalWidth={240}
+                  totalHeight={50}
+                  iconSize={25}
+                  valueType="real"
+                  rounded
+                  iconStyle={{ color: "white" }}
+                  rightButtonBackgroundColor="#FC6C03"
+                  leftButtonBackgroundColor="#FC6C03"
+                />
+              </View>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button
+                onPress={() => {
+                  updateQt({
+                    variables: {
+                      id: productId,
+                      qt: value
+                    }
+                  });
+                  refetch({ variables: { id: bagId } });
+                  setVisibleq(false);
+                }}
+              >
+                حفظ
               </Button>
             </Dialog.Actions>
           </Dialog>
@@ -224,6 +303,18 @@ export default function Bag() {
         }}
       >
         الرجاء اختيار موقع أو إضافة موقع في ملفك الشخصي!
+      </Snackbar>
+      <Snackbar
+        visible={snackVisibled}
+        onDismiss={() => setSnackVisibled(false)}
+        action={{
+          label: "الغاء",
+          onPress: () => {
+            setSnackVisibled(false);
+          }
+        }}
+      >
+        سوف نتصل بك قريبًا بعد تأكيد عملية الشراء !
       </Snackbar>
     </View>
   );

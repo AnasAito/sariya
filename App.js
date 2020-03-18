@@ -35,7 +35,8 @@ const AppStack = createStackNavigator({
     navigationOptions: () => ({
       title: `الصفحة الرئيسية `,
       headerStyle: {
-        backgroundColor: "#FC6C03"
+        backgroundColor: "#FC6C03",
+        height: 50
       },
       headerTintColor: "#fff",
       headerTitleStyle: {
@@ -48,8 +49,10 @@ const AppStack = createStackNavigator({
     screen: ProductScreen,
     navigationOptions: () => ({
       title: ` وصف المنتج `,
+      headerBackTitle: "خلف",
       headerStyle: {
-        backgroundColor: "#FC6C03"
+        backgroundColor: "#FC6C03",
+        height: 50
       },
       headerTintColor: "#fff",
       headerTitleStyle: {

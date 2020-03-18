@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, AsyncStorage, StyleSheet } from "react-native";
+import { View, AsyncStorage, StyleSheet, Image } from "react-native";
 import { Title, Text, Surface, FAB, Divider } from "react-native-paper";
 import { Portal, Button, Dialog, TextInput } from "react-native-paper";
 import * as Permissions from "expo-permissions";
@@ -57,16 +57,16 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Surface
-        style={{ alignItems: "center", padding: 10, alignSelf: "center" }}
-      >
-        <Title style={{ fontSize: 60, paddingTop: 40, paddingLeft: 15 }}>
-          الصايرة{" "}
-        </Title>
-        <Text style={{ fontSize: 25, color: "#FC6C03", fontWeight: "600" }}>
-          Shopping
-        </Text>
-      </Surface>
+      <View style={{ paddingTop: 50 }}>
+        <Image
+          style={{ height: 50 }}
+          source={{
+            uri:
+              "https://firebasestorage.googleapis.com/v0/b/application-upload.appspot.com/o/import%2Flogo%20(1).png?alt=media&token=05ca8b43-1969-4fd6-905e-a190eb1ed208"
+          }}
+        />
+      </View>
+
       {loading ? (
         <ActivityIndicator
           style={{ marginTop: 20 }}
@@ -111,6 +111,27 @@ export default function ProfileScreen({ navigation }) {
         </View>
       )}
       <Divider />
+      <View>
+        <Text
+          style={{
+            marginTop: 10,
+            marginLeft: 20,
+            fontSize: 25,
+            fontWeight: "400",
+            color: "gray"
+          }}
+        >
+          المواقع الجغرافية الخاصة بي :
+        </Text>
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
+          {!loading ? (
+            data.user.locations.map(loc => <Text>{loc.name}</Text>)
+          ) : (
+            <></>
+          )}
+        </View>
+      </View>
+
       {/*  <Button
     style={{ alignSelf: "center", marginTop: 50 }}
         mode="contained"
@@ -138,6 +159,10 @@ export default function ProfileScreen({ navigation }) {
         >
           <Dialog.Title>أدخل اسمًا لموقعك الجديد</Dialog.Title>
           <Dialog.Content>
+            <Text style={{ marginBottom: 10 }}>
+              ملاحظة: يرجي أن تتأكدوا من وجودكم فالمنزل لأننا ستسجل موقعكم
+              باستخدام ال GPS لنسهل عملية التوصيل .
+            </Text>
             <TextInput
               type="outlined"
               label="اسم الموقع"
@@ -157,8 +182,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 40,
-    direction: "rtl"
-    //  justifyContent: "center",
+    direction: "rtl",
+    alignContent: "center"
   },
   fab: {
     position: "absolute",

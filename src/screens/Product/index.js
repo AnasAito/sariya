@@ -47,7 +47,7 @@ export default function ProductScreen(props) {
       setSnackVisible(true);
     });
   };
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   return (
     <>
       <ScrollView style={styles.container}>
@@ -112,6 +112,7 @@ export default function ProductScreen(props) {
               <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <NumericInput
                   value={value}
+                  minValue={1}
                   onChange={value => setValue(value)}
                   onLimitReached={(isMax, msg) => console.log(isMax, msg)}
                   totalWidth={240}
@@ -137,6 +138,20 @@ export default function ProductScreen(props) {
                 }}
               >
                 أضف الى الحقيبة
+              </Button>
+              <Button
+                onPress={async () => {
+                  await addtobag(
+                    mutation,
+                    props.navigation.getParam("productId", ""),
+                    value
+                  ).then(() => {
+                    setVisible(false);
+                    props.navigation.navigate("Bag");
+                  });
+                }}
+              >
+                إنهاء الشراء
               </Button>
             </Dialog.Actions>
           </Dialog>

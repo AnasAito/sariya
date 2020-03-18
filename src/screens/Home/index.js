@@ -47,9 +47,6 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
         <View>
-          <Subheading style={styles.hi}>
-            {!loadingu ? user.user.name : ""} أهلا
-          </Subheading>
           <Title style={styles.welcome}>مرحباً</Title>
         </View>
       </View>
@@ -95,7 +92,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 10
   },
-  welcome: { fontSize: 40, paddingTop: 10, marginRight: 10 },
+  welcome: { fontSize: 40, paddingTop: 30, marginRight: 10 },
   content: {
     flex: 0.8,
     paddingTop: 10
@@ -111,6 +108,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     margin: 10,
-    marginTop: 28
+    marginTop: 15
   }
 });

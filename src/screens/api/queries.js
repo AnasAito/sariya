@@ -18,7 +18,7 @@ export const User = gql`
 
 export const Products = gql`
   query products {
-    products {
+    products(where: { published: true }) {
       id
       name
       price
