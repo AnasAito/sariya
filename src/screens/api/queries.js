@@ -15,6 +15,13 @@ export const User = gql`
     }
   }
 `;
+export const Login = gql`
+  query users($phone: String!, $mdp: String!) {
+    users(where: { phone: $phone, mdp: $mdp }) {
+      id
+    }
+  }
+`;
 
 export const Products = gql`
   query products {
@@ -52,9 +59,19 @@ export const UserBag = gql`
     }
   }
 `;
+export const StaticData = gql`
+  query user {
+    user(where: { id: "ck804bdt8j09d0950n3xkr6pv" }) {
+      phone
+      name
+    }
+  }
+`;
 export default {
   user: User,
   products: Products,
   product: Product,
-  userBag: UserBag
+  userBag: UserBag,
+  login: Login,
+  staticData: StaticData
 };

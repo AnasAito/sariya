@@ -62,7 +62,7 @@ export default function ProductScreen(props) {
                   // Local image
                 ]
           }
-          dotColor="#FC6C03"
+          dotColor="#EF8B0C"
           inactiveDotColor="#777"
           sliderBoxHeight={300}
           autoplay
@@ -71,7 +71,7 @@ export default function ProductScreen(props) {
         <View>
           <View
             style={{
-              flexDirection: "row-reverse",
+              flexDirection: "row",
               justifyContent: "space-between",
               direction: "rtl",
               marginLeft: 10
@@ -82,21 +82,24 @@ export default function ProductScreen(props) {
                 {!loading ? data.product.price : ""} MRO
               </Text>
             </Chip>
-            <Title style={styles.title}>
-              {" "}
-              {!loading ? data.product.name : ""}
-            </Title>
+            <View style={{ flex: 0.9, flexDirection: "row-reverse" }}>
+              <Title style={styles.title}>
+                {" "}
+                {!loading ? data.product.name : ""}
+              </Title>
+            </View>
           </View>
-
-          <Text style={styles.desc}>
-            {!loading ? data.product.description : ""}
-          </Text>
+          <View style={{ flexDirection: "row-reverse", marginLeft: 10 }}>
+            <Text style={styles.desc}>
+              {!loading ? data.product.description : ""}
+            </Text>
+          </View>
 
           <Button
             mode="contained"
             style={{ alignSelf: "center", marginTop: 30 }}
             onPress={() => setVisible(true)}
-            color="#FC6C03"
+            color="#EF8B0C"
           >
             أضف الى الحقيبة
           </Button>
@@ -121,8 +124,8 @@ export default function ProductScreen(props) {
                   valueType="real"
                   rounded
                   iconStyle={{ color: "white" }}
-                  rightButtonBackgroundColor="#FC6C03"
-                  leftButtonBackgroundColor="#FC6C03"
+                  rightButtonBackgroundColor="#EF8B0C"
+                  leftButtonBackgroundColor="#EF8B0C"
                 />
               </View>
             </Dialog.Content>
@@ -183,12 +186,12 @@ const styles = StyleSheet.create({
   title: {
     paddingTop: 30,
     fontSize: 30,
-    flex: 0.9,
+    marginRight: 10,
     marginLeft: 10
   },
   code: {
     marginTop: 30,
-    backgroundColor: "#FC6C03",
+    backgroundColor: "#EF8B0C",
 
     alignSelf: "flex-start"
   },

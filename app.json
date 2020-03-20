@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Sariya",
-    "slug": "sariya",
+    "name": "Saira",
+    "slug": "Saira",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -11,7 +11,7 @@
     ],
     "version": "1.0.0",
     "android": {
-      "package": "com.sayira.sayira",
+      "package": "com.saira.saira",
       "versionCode": 1
     },
     "ios": {
@@ -19,8 +19,8 @@
       "buildNumber": "1.0.0"
     },
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": { 
+    "icon": "./assets/playstore-icon.png",
+    "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
@@ -31,6 +31,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "description": ""   
+    "description": ""
   }
 }

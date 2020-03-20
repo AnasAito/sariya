@@ -29,8 +29,9 @@ export default function ProfileScreen({ navigation }) {
   }, []);
   const [locationResult, setLocationResult] = useState(null);
   const [mutation] = useMutation(mutations.createLocation);
-  const { loading, data } = useQuery(queries.user, {
-    variables: { id: userId }
+  const { loading, data, refetch } = useQuery(queries.user, {
+    variables: { id: userId },
+    fetchPolicy: "network-only"
   });
   const getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -53,27 +54,23 @@ export default function ProfileScreen({ navigation }) {
       }
     });
     setVisible(false);
+    refetch({ variables: { id: userId } });
     setText("");
   };
 
   return (
     <View style={styles.container}>
-      <View style={{ paddingTop: 50 }}>
-        <Image
-          style={{ height: 50 }}
-          source={{
-            uri:
-              "https://firebasestorage.googleapis.com/v0/b/application-upload.appspot.com/o/import%2Flogo%20(1).png?alt=media&token=05ca8b43-1969-4fd6-905e-a190eb1ed208"
-          }}
-        />
-      </View>
+      <Image
+        style={{ height: 100, padding: 30 }}
+        source={{ uri: "https://i.ibb.co/zZc0D4d/1-YHCCWs-Q7-Ezc.png" }}
+      />
 
       {loading ? (
         <ActivityIndicator
           style={{ marginTop: 20 }}
           size={"large"}
           animating={true}
-          color={"#FC6C03"}
+          color={"#EF8B0C"}
         />
       ) : (
         <View style={{ marginTop: 50 }}>
@@ -82,7 +79,7 @@ export default function ProfileScreen({ navigation }) {
             style={{
               margin: 20,
               marginLeft: 20,
-              flexDirection: "row"
+              flexDirection: "row-reverse"
             }}
           >
             <Text style={{ fontSize: 25, fontWeight: "400", color: "gray" }}>
@@ -98,10 +95,17 @@ export default function ProfileScreen({ navigation }) {
             style={{
               margin: 20,
               marginLeft: 20,
-              flexDirection: "row"
+              flexDirection: "row-reverse"
             }}
           >
-            <Text style={{ fontSize: 25, fontWeight: "400", color: "gray" }}>
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: "400",
+                color: "gray",
+                direction: "rtl"
+              }}
+            >
               رقم الهاتف :{" "}
             </Text>
 
@@ -112,7 +116,7 @@ export default function ProfileScreen({ navigation }) {
         </View>
       )}
       <Divider />
-      <View>
+      <View style={{ flexDirection: "row-reverse", marginLeft: 20 }}>
         <Text
           style={{
             marginTop: 10,
@@ -124,26 +128,22 @@ export default function ProfileScreen({ navigation }) {
         >
           المواقع الجغرافية الخاصة بي :
         </Text>
-        <View style={{ flexDirection: "row", marginTop: 10, marginLeft: 20 }}>
-          {!loading ? (
-            data.user.locations.map(loc => (
-              <Chip style={{ marginLeft: 10, backgroundColor: "#FC6C03" }}>
-                <Text style={{ fontWeight: "bold" }}>{loc.name}</Text>
-              </Chip>
-            ))
-          ) : (
-            <></>
-          )}
-        </View>
+      </View>
+      <View
+        style={{ flexDirection: "row-reverse", marginTop: 10, marginLeft: 20 }}
+      >
+        {!loading ? (
+          data.user.locations.map(loc => (
+            <Chip style={{ marginLeft: 10, backgroundColor: "#EF8B0C" }}>
+              <Text style={{ fontWeight: "bold" }}>{loc.name}</Text>
+            </Chip>
+          ))
+        ) : (
+          <></>
+        )}
       </View>
 
-      {/*  <Button
-    style={{ alignSelf: "center", marginTop: 50 }}
-        mode="contained"
-        onPress={() => navigation.navigate("SignIn")}
-      >
-        sign out
-    </Button>*/}
+      {}
       <FAB
         style={styles.fab}
         small
@@ -186,7 +186,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 40,
+    marginTop: 80,
     direction: "rtl",
     alignContent: "center"
   },
@@ -195,6 +195,6 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     bottom: 0,
-    backgroundColor: "#FC6C03"
+    backgroundColor: "#EF8B0C"
   }
 });

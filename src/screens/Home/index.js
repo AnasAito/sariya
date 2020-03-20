@@ -43,7 +43,7 @@ export default function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate("Bag")}
             name="bag"
             size={40}
-            color="#FC6C03"
+            color="#EF8B0C"
           />
         </View>
         <View>
@@ -70,7 +70,7 @@ export default function HomeScreen({ navigation }) {
             style={{ marginTop: 20 }}
             size={"large"}
             animating={true}
-            color={"#FC6C03"}
+            color={"#EF8B0C"}
           />
         )}
       </ScrollView>

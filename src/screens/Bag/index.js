@@ -18,6 +18,7 @@ export default function Bag() {
   const [visible1, setVisible1] = useState(false);
   const [visibleq, setVisibleq] = useState(false);
   const [value, setValue] = useState(1);
+  const [del, setDel] = useState(0);
   const [snackVisible, setSnackVisible] = useState(false);
   const [snackVisibled, setSnackVisibled] = useState(false);
   const [productId, setProductId] = useState("");
@@ -43,10 +44,18 @@ export default function Bag() {
     variables: { id: bagId },
     fetchPolicy: "cache-and-network"
   });
+  const { loading: loadingj, data: dataj } = useQuery(queries.staticData, {
+    fetchPolicy: "network-only"
+  });
   const { loading: loadingl, data: dataLocation } = useQuery(queries.user, {
     variables: { id: userId },
     fetchPolicy: "network-only"
   });
+  useEffect(() => {
+    if (!loadingj) {
+      setDel(parseFloat(dataj.user.name));
+    }
+  }, [dataj]);
   const [mutation] = useMutation(mutations.deleteUserProduct);
   const [updateQt] = useMutation(mutations.updateQt);
   const [checkout] = useMutation(mutations.checkOut);
@@ -59,13 +68,7 @@ export default function Bag() {
     });
     return total.toFixed(2);
   };
-  const getTotald = list => {
-    let total = 50;
-    list.map(product => {
-      total = total + product.product.price * product.qt;
-    });
-    return total.toFixed(2);
-  };
+
   const publish = async () => {
     if (checked) {
       // publish bag
@@ -134,7 +137,7 @@ export default function Bag() {
                       }}
                       name="edit"
                       size={29}
-                      color="#FC6C03"
+                      color="#EF8B0C"
                     />
                   </DataTable.Cell>
                   <DataTable.Cell numeric>
@@ -146,7 +149,7 @@ export default function Bag() {
                       }}
                       name="delete"
                       size={29}
-                      color="#FC6C03"
+                      color="#EF8B0C"
                     />
                   </DataTable.Cell>
                 </DataTable.Row>
@@ -157,7 +160,7 @@ export default function Bag() {
               style={{ marginTop: 20 }}
               size={"large"}
               animating={true}
-              color={"#FC6C03"}
+              color={"#EF8B0C"}
             />
           )}
         </DataTable>
@@ -175,7 +178,12 @@ export default function Bag() {
           <Chip style={styles.code}>
             <Text style={{ fontWeight: "bold" }}>
               الإجمالي بعد تكلفة التسليم :{" "}
-              {!loading ? getTotald(data.userBag.userProducts) : 0} MRO
+              {!loading
+                ? !loadingj
+                  ? +del + +getTotal(data.userBag.userProducts)
+                  : ""
+                : 0}{" "}
+              MRO
             </Text>
           </Chip>
         </View>
@@ -183,7 +191,7 @@ export default function Bag() {
           mode="contained"
           style={{ alignSelf: "center", marginTop: 30 }}
           onPress={() => setVisible(true)}
-          color="#FC6C03"
+          color="#EF8B0C"
         >
           الدفع
         </Button>
@@ -210,7 +218,7 @@ export default function Bag() {
                         key={location.id}
                         label={location.name}
                         value={location.id}
-                        color="#FC6C03"
+                        color="#EF8B0C"
                       />
                     ))
                   ) : (
@@ -268,8 +276,8 @@ export default function Bag() {
                   valueType="real"
                   rounded
                   iconStyle={{ color: "white" }}
-                  rightButtonBackgroundColor="#FC6C03"
-                  leftButtonBackgroundColor="#FC6C03"
+                  rightButtonBackgroundColor="#EF8B0C"
+                  leftButtonBackgroundColor="#EF8B0C"
                 />
               </View>
             </Dialog.Content>

@@ -12,8 +12,9 @@ import ProductScreen from "./src/screens/Product/index";
 import ProfileScreen from "./src/screens/Profile/index";
 import AuthLoadingScreen from "./src/screens/loading";
 import SignInScreen from "./src/screens/signin";
+import Login from "./src/screens/login";
 import Bag from "./src/screens/Bag/index";
-import Phone from "./src/screens/phoneSignIn";
+
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 const theme = {
@@ -35,8 +36,8 @@ const AppStack = createStackNavigator({
     navigationOptions: () => ({
       title: `الصفحة الرئيسية `,
       headerStyle: {
-        backgroundColor: "#FC6C03",
-        height: 50
+        backgroundColor: "#EF8B0C",
+        height: 60
       },
       headerTintColor: "#fff",
       headerTitleStyle: {
@@ -51,8 +52,8 @@ const AppStack = createStackNavigator({
       title: ` وصف المنتج `,
       headerBackTitle: "خلف",
       headerStyle: {
-        backgroundColor: "#FC6C03",
-        height: 50
+        backgroundColor: "#EF8B0C",
+        height: 60
       },
       headerTintColor: "#fff",
       headerTitleStyle: {
@@ -65,7 +66,7 @@ const AppStack = createStackNavigator({
     navigationOptions: () => ({
       title: `حقيبة`,
       headerStyle: {
-        backgroundColor: "#FC6C03"
+        backgroundColor: "#EF8B0C"
       },
       headerTintColor: "#fff",
       headerTitleStyle: {
@@ -88,7 +89,32 @@ const Profile = createStackNavigator(
 );
 const AuthStack = createStackNavigator({
   SignIn: {
-    screen: SignInScreen
+    screen: SignInScreen,
+    navigationOptions: () => ({
+      title: ` تسجيل الدخول`,
+
+      headerStyle: {
+        backgroundColor: "#EF8B0C"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold"
+      }
+    })
+  },
+  LogIn: {
+    screen: Login,
+    navigationOptions: () => ({
+      title: ` تسجيل الدخول`,
+
+      headerStyle: {
+        backgroundColor: "#EF8B0C"
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        fontWeight: "bold"
+      }
+    })
   }
 });
 const AppTabNavigator = createBottomTabNavigator(
@@ -124,7 +150,7 @@ const AppTabNavigator = createBottomTabNavigator(
     }),
     tabBarOptions: {
       inactiveTintColor: "gray",
-      activeTintColor: "#FC6C03"
+      activeTintColor: "#EF8B0C"
     }
   }
 );
