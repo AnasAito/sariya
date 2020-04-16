@@ -8,6 +8,7 @@ import * as Location from "expo-location";
 import { ActivityIndicator } from "react-native-paper";
 import mutations from "../api/mutations";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import { Linking } from "expo";
 import queries from "../api/queries";
 export default function ProfileScreen({ navigation }) {
   const [hasLocationPermissions, setHasLocationPermissions] = useState(false);
@@ -134,7 +135,14 @@ export default function ProfileScreen({ navigation }) {
       >
         {!loading ? (
           data.user.locations.map(loc => (
-            <Chip style={{ marginLeft: 10, backgroundColor: "#EF8B0C" }}>
+            <Chip
+              style={{ marginLeft: 10, backgroundColor: "#EF8B0C" }}
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/maps/search/?api=1&query=${loc.lat},${loc.long}`
+                )
+              }
+            >
               <Text style={{ fontWeight: "bold" }}>{loc.name}</Text>
             </Chip>
           ))

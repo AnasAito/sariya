@@ -27,7 +27,7 @@ const theme = {
   }
 };
 const client = new ApolloClient({
-  uri: "https://backend.anasaitaomar1999.now.sh/"
+  uri: "https://backend-saira.now.sh/"
 });
 
 const AppStack = createStackNavigator({

@@ -12,6 +12,7 @@ export default function AuthLoadingScreen({ navigation }) {
   useEffect(() => {
     // Create an scoped async function in the hook
     async function loadUsername() {
+      //AsyncStorage.clear();
       const userToken = await AsyncStorage.getItem("userToken");
 
       // This will switch to the App screen or Auth screen and this loading

@@ -61,7 +61,7 @@ export const UserBag = gql`
 `;
 export const StaticData = gql`
   query user {
-    user(where: { id: "ck804bdt8j09d0950n3xkr6pv" }) {
+    user(where: { id: "ck830jgzw002c0704ihzvmbh4" }) {
       phone
       name
     }

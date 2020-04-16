@@ -56,10 +56,7 @@ export default function ProductScreen(props) {
             !loading
               ? data.product.images
               : [
-                  "https://assets-ouch.icons8.com/preview/898/8942160d-0a5d-4978-b21b-3722075388d1.png",
-                  "https://assets-ouch.icons8.com/preview/105/9ecf53bb-4a39-4b07-9af3-531a361270e6.png"
                   // Network image
-                  // Local image
                 ]
           }
           dotColor="#EF8B0C"
